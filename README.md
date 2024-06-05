@@ -77,7 +77,7 @@ An AWS account with necessary permissions run Lambda function, configure Target 
 ### Build and Deploy the SAM template
 
 1. Clone the repo using command ```git clone https://github.com/aws-solutions-library-samples/guidance-for-optimizing-heterogeneous-auto-scaling-group-resource-utilization-on-aws.git```
-2. cd to the repo folder ```cd guidance-for-optimizing-heterogeneous-auto-scaling-group-resource-utilization-on-aws```
+2. cd to the repo folder ```cd guidance-for-optimizing-heterogeneous-auto-scaling-group-resource-utilization-on-aws/source```
 3. Build the application
    - `sam build`
 4. Deploy the SAM template using this command
