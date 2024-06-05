@@ -1,6 +1,6 @@
 AWSTemplateFormatVersion: '2010-09-09'
 Transform: AWS::Serverless-2016-10-31
-Description: Dynamic update of Listener's Target Groups weights to distribute ELB traffic proportionally based on relative weight percents, gets invoked by Event Bridge timer event and runs on user defined interval.
+Description: (SO9472) Dynamic update of Listener's Target Groups weights to distribute ELB traffic proportionally based on relative weight percents, gets invoked by Event Bridge timer event and runs on user defined interval.
 
 Parameters:
   ElbArn:
