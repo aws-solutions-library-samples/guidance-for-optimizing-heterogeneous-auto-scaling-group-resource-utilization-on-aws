@@ -1,0 +1,12 @@
+version = 0.1
+[default]
+[default.deploy]
+[default.deploy.parameters]
+stack_name = "fromvscode"
+s3_bucket = "elbasgcodebucket"
+s3_prefix = "vscode"
+region = "us-east-2"
+confirm_changeset = true
+capabilities = "CAPABILITY_NAMED_IAM"
+parameter_overrides = "ElbArn=\"arn:aws:elasticloadbalancing:us-east-2:1234567890:loadbalancer/app/myEC2Workshop/ad7238d16eb86098\" ListOfListeners=\"arn:aws:elasticloadbalancing:us-east-2:1234567890:listener/app/myEC2Workshop/ad7238d16eb86348/45c33b776818e452\" TargetGroupWeightUpdateFrequency=\"15\" User=\"Rajesh Kesaraju\""
+image_repositories = []

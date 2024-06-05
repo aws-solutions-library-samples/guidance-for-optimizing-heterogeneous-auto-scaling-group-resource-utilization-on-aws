@@ -1,0 +1,77 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Transform: AWS::Serverless-2016-10-31
+Description: Dynamic update of Listener's Target Groups weights to distribute ELB traffic proportionally based on relative weight percents, gets invoked by Event Bridge timer event and runs on user defined interval.
+
+Parameters:
+  ElbArn:
+    Type: String
+    Description: "Enter ELB ARN"
+    Default: "arn:aws:elasticloadbalancing:us-east-2:1234567890:loadbalancer/app/myEC2Workshop/ad7238d16eb86098"
+  ListOfListeners:
+    Type: String
+    Description: "Provide List of Port Listener ARNs. It can take multiple Listeners comma separated"
+    Default: "arn:aws:elasticloadbalancing:us-east-2:1234567890:listener/app/myEC2Workshop/ad7238d16eb86348/45c33b776818e452"
+  TargetGroupWeightUpdateFrequency:
+    Type: Number
+    Description: "Frequency to update Target Groups weights (provide value between 1 and 59)"
+    Default: "15"
+  User:
+    Type: String
+    Description: "User's name will be used to tag resources"
+    Default: "Your Name"
+
+Resources:
+  ElbAsgFunction:
+    Type: AWS::Serverless::Function # More info about Function Resource: https://github.com/awslabs/serverless-application-model/blob/master/versions/2016-10-31.md#awsserverlessfunction
+    Properties:
+      CodeUri: tg-dynamic-weight-updater/
+      Handler: app.lambda_handler
+      Runtime: python3.9
+      Timeout: 300
+      MemorySize: 128
+      Role: !GetAtt CustomQueryEC2AsgUpdateElbRole.Arn
+      Environment:
+        Variables:
+          elb_arn: !Ref ElbArn # This will prompt the user for a value when using sam deploy --guided
+          list_of_listeners: !Ref ListOfListeners # This will prompt the user for a value when using sam deploy --guided
+      Events:
+        TargetSetterEventSource:
+          Properties:
+            Description: "this rule invokes the lambda every <Specified> minutes, Default is 15min from SAM deployment"
+            Enabled: true
+            Schedule: !Sub  'cron(0/${TargetGroupWeightUpdateFrequency} * * * ? *)'    # or 'rate(${TargetGroupWeightUpdateFrequency} minutes)'
+          Type: Schedule
+      Tags:
+        Owner: !Ref User
+  CustomQueryEC2AsgUpdateElbRole:
+    Type: AWS::IAM::Role
+    Properties:
+      RoleName: CustomQueryEC2AsgUpdateElbRole
+      AssumeRolePolicyDocument:
+        Version: "2012-10-17"
+        Statement:
+          - Effect: Allow
+            Principal:
+              Service: lambda.amazonaws.com
+            Action: sts:AssumeRole
+      Policies:
+        - PolicyName: CustomQueryEC2AsgUpdateElbPolicy
+          PolicyDocument:
+            Version: "2012-10-17"
+            Statement:
+              - Effect: Allow
+                Action:
+                  - elasticloadbalancing:ModifyListener
+                  - elasticloadbalancing:DescribeListeners
+                  - elasticloadbalancing:DescribeTargetHealth
+                  - elasticloadbalancing:DescribeTargetGroups
+                Resource: '*'
+              - Effect: Allow
+                Action:
+                  - ec2:DescribeInstances
+                  - autoscaling:Describe*
+                  - logs:CreateLogGroup
+                  - logs:CreateLogStream
+                  - logs:PutLogEvents
+                Resource: "*"
+                
