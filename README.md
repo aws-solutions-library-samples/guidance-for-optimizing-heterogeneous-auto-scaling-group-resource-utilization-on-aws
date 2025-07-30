@@ -25,7 +25,7 @@ With existing routing algorithms, AWS ELB cannot route or distribute requests pr
 This problem particularly impacts the mixed instances policy in ASGs, which we recommend as a best practice for diversifying to as many different types and sizes of EC2 instances as best practice
 for adopting EC2 Spot instances, that are priced up to 90% discount to on-demand instances.
 
-![Architecture Diagram](./assets/images/Mixed-sized-ASG-solution.png) 
+![Architecture Diagram](./assets/images/Mixed-sized-ASG-solution_v2.png) 
 Figure 1: Architecture Diagram showing the components deployed by the SAM template (At this moment it assumes that you already have created an ELB, Listeners, Target Groups(TGs), and Auto Scaling Groups in the environment you are testing this solution, and have access ELB Arn and Listener's Arn(s) to provide them in building/deploying SAM application)
 
 
